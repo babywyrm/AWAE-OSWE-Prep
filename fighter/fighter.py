@@ -1,6 +1,6 @@
 import requests
 import argparse
-import base64
+
 parser = argparse.ArgumentParser(description='Blind SQL Injection Boolean (Fighter hackthebox)')
 
 parser.add_argument("--username", default=None, type=str, help="Your street username")
